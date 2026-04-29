@@ -1,0 +1,9 @@
+python-dotenv
+redis
+telethon
+pysocks
+requests
+psycopg2-binary
+playwright
+googlesearch-python
+duckduckgo-search

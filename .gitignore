@@ -1,0 +1,33 @@
+# Security / Secrets
+.env
+*.env
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+docker-compose.yml.backup
+docker-compose.backup
+tg_sessions/*
+postgres_data/*
+crawlers/downloads/*
+crawlers/src/temp_downloads/*
+crawlers/src/downloads/*
+crawlers/src/sessions/*
+crawlers/src/backup/*
+backend/src/config_origin.py
+
+# Credentials and Auth states
+twitter_auth.json
+*.session

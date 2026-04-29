@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # 1. 메시지 큐 (Redis)
+  redis:
+    image: redis:alpine
+    container_name: darkweb_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - darkweb_net
+    restart: always
+
+  # 2. 데이터베이스 (PostgreSQL)
+  postgres:
+    image: postgres:15
+    container_name: darkweb_db
+    environment:
+      POSTGRES_USER: phoenix
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: darkweb_project
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - darkweb_net
+    restart: always
+
+  # 3. 크롤러 통합 그룹 (토큰 및 설정 복구됨!)
+  crawler_group:
+    build: ./crawlers
+    container_name: crawler_group
+    depends_on:
+      - redis
+    environment:
+      # [중요] 호스트 이름을 컨테이너 이름(darkweb_redis)으로 통일
+      - REDIS_HOST=darkweb_redis
+      
+      # ▼▼▼ 사용자님 토큰 정보 ▼▼▼
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - TG_API_ID=${TG_API_ID}
+      - TG_API_HASH=${TG_API_HASH}
+      - TG_SESSION_PATH=${TG_SESSION_PATH}
+      - TG_BOT_TOKEN=${TG_BOT_TOKEN}
+      - TG_CHAT_ID=${TG_CHAT_ID}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./crawlers/src:/app
+      - ./tg_sessions:/app/sessions
+      - ./crawlers/downloads:/app/downloads
+    networks:
+      - darkweb_net
+    command: tail -f /dev/null
+    restart: always
+
+  # 4. 백엔드 워커 (네트워크 연결 추가됨)
+  backend_worker:
+    build: ./backend
+    container_name: backend_worker
+    restart: always
+    environment:
+      # [중요] 호스트 이름을 컨테이너 이름으로 통일
+      - REDIS_HOST=darkweb_redis
+      - DB_HOST=darkweb_db
+
+      - POSTGRES_DB=darkweb_project
+      - POSTGRES_USER=phoenix
+      - POSTGRES_PASSWORD=password
+
+      # ▼▼▼ 사용자님 키 정보 유지 ▼▼▼
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      # [주의] 봇 토큰은 '숫자:문자열' 형식이어야 합니다. 아래 값이 맞는지 확인해주세요.
+      - TG_BOT_TOKEN=${TG_BOT_TOKEN}
+      - TG_CHAT_ID=${TG_CHAT_ID}
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - darkweb_net
+
+# [필수] 공용 네트워크 정의
+networks:
+  darkweb_net:
+    driver: bridge
