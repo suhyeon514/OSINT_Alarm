@@ -28,6 +28,13 @@
 
 ---
 
+### 실제 동작 영상
+<br>
+<img width="1920" height="1080" alt="다크웹" src="https://github.com/user-attachments/assets/d627117c-b599-4b57-834a-d9bb4155cfcd" />
+
+
+---
+
 ### 사전 요구사항
 
 - Docker / Docker Compose
