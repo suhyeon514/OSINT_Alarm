@@ -27,6 +27,8 @@ crawlers/src/downloads/*
 crawlers/src/sessions/*
 crawlers/src/backup/*
 backend/src/config_origin.py
+crawlers/src/temp_downloads
+crawlers/src/channel_name.txt
 
 # Credentials and Auth states
 twitter_auth.json

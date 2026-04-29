@@ -16,9 +16,9 @@ services:
     image: postgres:15
     container_name: darkweb_db
     environment:
-      POSTGRES_USER: phoenix
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: darkweb_project
+      POSTGRES_USER: YOUR_POSTGRES_USER
+      POSTGRES_PASSWORD: YOUR_POSTGRES_PASSWORD
+      POSTGRES_DB: YOUR_POSTGRES_DB
     ports:
       - "5432:5432"
     volumes:
