@@ -14,6 +14,8 @@
 
 ### 아키텍처 / 데이터 흐름
 
+<img width="1065" height="441" alt="Image" src="https://github.com/user-attachments/assets/14514880-6fff-460e-bf2f-dfbbd18cd01e" />
+
 1. 크롤러(crawlers)가 외부 소스에서 게시글/코드 등을 수집
 2. 크롤러가 수집 데이터를 **Redis 리스트(큐)** 로 push  
 3. backend 워커가 Redis에서 pop하여 처리:
